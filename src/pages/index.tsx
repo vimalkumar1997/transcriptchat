@@ -137,6 +137,10 @@ export default function Login() {
     }
   };
 
+  function hadleSignupRedirect(){
+    router.push('/signup');
+  }
+
   return (
     <>
       <Head>
@@ -217,10 +221,11 @@ export default function Login() {
                 </label>
                 
                 <Anchor 
-                  href="/forgotpassword" 
+                  // href="/forgotpassword" 
                   ta="right" 
                   c="#3F3EED !important"
                   size="sm"
+                  onClick={() => router.push('/forgotpassword')}
                 >
                   Forgot password?
                 </Anchor>
@@ -241,11 +246,12 @@ export default function Login() {
             <Typography variant={"body1"} component={"p"} ta="center" mt="md">
               Don't have an account?
               <Anchor 
-                href="/signup" 
+                // href="/signup" 
                 ta="right" 
                 c="#3F3EED !important" 
                 mt="xs" 
                 ml={"xs"}
+                onClick={hadleSignupRedirect}
               >
                 Sign Up for free
               </Anchor>

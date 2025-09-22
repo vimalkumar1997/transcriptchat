@@ -18,21 +18,22 @@ export default function Home() {
                     <Card shadow="sm" padding="lg" radius="md" withBorder w={"500px"}>
                         <Typography variant={"h4"} component={"h4"} ta="center">Welcome Back</Typography>
                         <Typography variant={"h2"} component={"h2"} ta="center">Signup to continue</Typography>
+                         <TextInput
+                            placeholder="Enter your username"
+                            m="xs"
+                            size="md"
+                        />
                         <TextInput
                             placeholder="Enter your email"
                             m="xs"
                             size="md"
                         />
                         <PasswordInput
-                            placeholder="Enter your password"
+                            placeholder="Create your password"
                             m="xs"
                             size="md"
                         />
-                        <PasswordInput
-                            placeholder="Enter your confirm password"
-                            m="xs"
-                            size="md"
-                        />
+                       
                         {/* <Anchor href="https://mantine.dev/" target="_blank" ta="right" c="#3F3EED !important" mt="xs">
                             Forgot password?
                         </Anchor> */}

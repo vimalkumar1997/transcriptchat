@@ -1,9 +1,10 @@
 import { Box, Typography } from "@mantine/core";
 import Head from "next/head";
 import styles from "../../styles/Login.module.css";
-import Image from "next/image";
+import { useRouter } from "next/router";
 import { TextInput, PasswordInput, Button, Card, Anchor } from '@mantine/core';
 export default function Home() {
+     const router = useRouter();
     return (
         <>
             <Head>
@@ -35,7 +36,7 @@ export default function Home() {
                         />
                         <Button fullWidth mt="xl" size="md">Forgot Account</Button>
                         <Typography variant={"body1"} component={"p"} ta="center" mt="md">If you have an account?
-                            <Anchor href="/" ta="right" c="#3F3EED !important" mt="xs" ml={"xs"}>
+                            <Anchor  ta="right" c="#3F3EED !important" mt="xs" ml={"xs"}  onClick={() => router.push('/')}>
                                 Sign In
                             </Anchor>
                         </Typography>

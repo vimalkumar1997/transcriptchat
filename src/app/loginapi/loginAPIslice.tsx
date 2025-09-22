@@ -155,14 +155,14 @@ export const loginAPISlice = createApi({
             invalidatesTags: ['Auth'],
         }),
 
-        // Verify token mutation
+        // Verify token mutation - FIXED: Changed from providesTags to invalidatesTags
         verifyToken: builder.mutation<VerifyTokenResponse, { token: string }>({
             query: (tokenData) => ({
                 url: '/verify-token',
                 method: 'POST',
                 data: tokenData,
             }),
-            providesTags: ['Auth'],
+            invalidatesTags: ['Auth'], // Fixed: mutations use invalidatesTags, not providesTags
         }),
 
         // Refresh token mutation
@@ -198,7 +198,8 @@ export const loginAPISlice = createApi({
                 }
             },
         }),
-        // Token management endpoints
+
+        // Token management endpoints - This should be a QUERY, not a mutation
         checkAuthStatus: builder.query<{ isAuthenticated: boolean; user: any | null }, void>({
             queryFn: async () => {
                 try {
@@ -235,10 +236,11 @@ export const loginAPISlice = createApi({
                     };
                 }
             },
-            providesTags: ['Auth'],
+            providesTags: ['Auth'], // This is correct for queries
         }),
     }),
 });
+
 export const {
     useLoginMutation,
     useRegisterMutation,
@@ -246,6 +248,7 @@ export const {
     useVerifyTokenMutation,
     useRefreshTokenMutation,
     useLogoutMutation,
+    useCheckAuthStatusQuery, // Added the missing export for the query
 } = loginAPISlice;
 
 export default loginAPISlice;

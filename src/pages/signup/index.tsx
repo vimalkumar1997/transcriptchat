@@ -1,10 +1,90 @@
+import React, { useState } from "react";
 import { Box, Typography } from "@mantine/core";
 import Head from "next/head";
 import styles from "../../styles/Login.module.css";
 import { useRouter } from "next/router";
-import { TextInput, PasswordInput, Button, Card, Anchor } from '@mantine/core';
+import { useRegisterMutation } from '@/app/loginapi/loginAPIslice'; // Update with your actual path
+import { TextInput, PasswordInput, Button, Card, Anchor, Alert, } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
+import { IconAlertCircle, IconCheck } from '@tabler/icons-react';
+interface SignupFormValue {
+    username: string;
+    email: string;
+    password: string;
+}
+
 export default function Home() {
-      const router = useRouter();
+    const router = useRouter();
+    const [singup, { isLoading, error }] = useRegisterMutation();
+    const [showPassword, setShowPassword] = useState(false);
+    const form = useForm<SignupFormValue>({
+        initialValues: {
+            username: '',
+            email: '',
+            password: '',
+        },
+        validate: {
+            email: (value) => {
+                if (!value) return 'Email is required';
+                if (!/^\S+@\S+$/.test(value)) return 'Invalid email format';
+                return null;
+            },
+            password: (value) => {
+                if (!value) return 'Password is required';
+                if (value.length < 6) return 'Password must be at least 6 characters';
+                return null;
+            },
+        },
+
+    });
+    const handleSubmit = async (values: SignupFormValue) => {
+        try {
+            const result = await singup({
+                username: values.username.trim(),
+                email: values.email.trim().toLowerCase(),
+                password: values.password,
+            }).unwrap();
+
+            // Show success notification
+            notifications.show({
+                title: 'Login Successful',
+                message: `Welcome back, ${result.user?.username || 'User'}!`,
+                color: 'green',
+                icon: <IconCheck size={16} />,
+                autoClose: 3000,
+            });
+            const redirectUrl = router.query.redirect as string || '/';
+            router.push(redirectUrl);
+
+        } catch (error: any) {
+            // Handle different types of errors
+            let errorMessage = 'Login failed. Please try again.';
+
+            if (error?.data?.error) {
+                errorMessage = error.data.error;
+            } else if (error?.message) {
+                errorMessage = error.message;
+            }
+
+            // Show error notification
+            notifications.show({
+                title: 'Signup Failed',
+                message: errorMessage,
+                color: 'red',
+                icon: <IconAlertCircle size={16} />,
+                autoClose: 5000,
+            });
+
+            // Clear password field on error
+            form.setFieldValue('password', '');
+        }
+    };
+    const handleKeyPress = (event: React.KeyboardEvent) => {
+        if (event.key === 'Enter') {
+            form.onSubmit(handleSubmit)();
+        }
+    };
     return (
         <>
             <Head>
@@ -19,30 +99,69 @@ export default function Home() {
                     <Card shadow="sm" padding="lg" radius="md" withBorder w={"500px"}>
                         <Typography variant={"h4"} component={"h4"} ta="center">Welcome Back</Typography>
                         <Typography variant={"h2"} component={"h2"} ta="center">Signup to continue</Typography>
-                         <TextInput
-                            placeholder="Enter your username"
-                            m="xs"
-                            size="md"
-                        />
-                        <TextInput
-                            placeholder="Enter your email"
-                            m="xs"
-                            size="md"
-                        />
-                        <PasswordInput
-                            placeholder="Create your password"
-                            m="xs"
-                            size="md"
-                        />
-                       
-                        {/* <Anchor href="https://mantine.dev/" target="_blank" ta="right" c="#3F3EED !important" mt="xs">
-                            Forgot password?
-                        </Anchor> */}
-                        <Button fullWidth mt="xl" size="md">Create Account</Button>
+                        {error && (
+                            <Alert
+                                icon={<IconAlertCircle size={16} />}
+                                title="Login Error"
+                                color="red"
+                                mb="md"
+                            >
+                                {(error as any)?.data?.error || 'An unexpected error occurred'}
+                            </Alert>
+                        )}
+                        <form onSubmit={form.onSubmit(handleSubmit)} onKeyPress={handleKeyPress}>
+                            <TextInput
+                                label="Username"
+                                value={form.values.username}
+                                placeholder="Enter your username"
+                                required
+                                type="username"
+                                m="xs"
+                                size="md"
+                                onChange={(event) => form.setFieldValue('username', event.currentTarget.value)}
+                                error={form.errors.username}
+                                disabled={isLoading}
+                            />
+                            <TextInput
+                                label="Email Address"
+                                placeholder="Enter your email"
+                                m="xs"
+                                size="md"
+                                required
+                                type="email"
+                                value={form.values.email}
+                                onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
+                                error={form.errors.email}
+                                disabled={isLoading}
+                            />
+                            <PasswordInput
+                                label="Password"
+                                placeholder="Create your password"
+                                m="xs"
+                                size="md"
+                                required
+                                value={form.values.password}
+                                onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
+                                error={form.errors.password}
+                                disabled={isLoading}
+                                visible={showPassword}
+                                onVisibilityChange={setShowPassword}
+                            />
+                            <Button
+                                fullWidth
+                                mt="xl"
+                                size="md"
+                                type="submit"
+                                loading={isLoading}
+                                disabled={!form.isValid()}
+                            >
+                                {isLoading ? 'Create Account...' : 'Create Account'}
+                            </Button>
+                        </form>
                         <Typography variant={"body1"} component={"p"} ta="center" mt="md">If you have an account?
 
-                            <Anchor  ta="right" c="#3F3EED !important" mt="xs" ml={"xs"}
-                             onClick={() => router.push('/')}
+                            <Anchor ta="right" c="#3F3EED !important" mt="xs" ml={"xs"}
+                                onClick={() => router.push('/')}
                             >
                                 Sign In
                             </Anchor>

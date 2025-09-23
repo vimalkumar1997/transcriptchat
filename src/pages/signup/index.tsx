@@ -41,7 +41,7 @@ export default function Home() {
     const handleSubmit = async (values: SignupFormValue) => {
         try {
             const result = await singup({
-                username: values.username.trim(),
+                username: values.username,
                 email: values.email.trim().toLowerCase(),
                 password: values.password,
             }).unwrap();
@@ -123,7 +123,7 @@ export default function Home() {
                                 disabled={isLoading}
                             />
                             <TextInput
-                                label="Email Address"
+                                label="Email"
                                 placeholder="Enter your email"
                                 m="xs"
                                 size="md"

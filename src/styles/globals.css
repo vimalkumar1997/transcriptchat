@@ -24,6 +24,10 @@ a {
   text-decoration: none;
 }
 
+.mantine-AppShell-navbar {
+  overflow: auto !important;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

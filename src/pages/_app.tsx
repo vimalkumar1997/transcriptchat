@@ -1,4 +1,3 @@
-import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import Layout from "@/layouts/Layout";
 import { MantineProvider, createTheme, MantineColorsTuple } from "@mantine/core";
@@ -6,6 +5,7 @@ import { useColorScheme } from "@mantine/hooks";
 import { Provider } from "react-redux";
 import store from "@/app/store";
 import '@mantine/core/styles.css';
+import "@/styles/globals.css";
 
 // Define custom primary color palette
 const primaryColor: MantineColorsTuple = [

@@ -1,12 +1,12 @@
 import { Box, Typography } from "@mantine/core";
 import React from "react";
-
+import { GptHomepage } from "@/components/GptChatComponent/GptHomepage";
 
 const VimalGpt=()=>{
 
     return(
         <Box>
-            <Typography>Vimal gpt page</Typography>
+            <GptHomepage/>
         </Box>
     )
 }
